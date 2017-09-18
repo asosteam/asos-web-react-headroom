@@ -12,7 +12,7 @@ describe('shouldUpdate', () => {
       upTolerance: 0,
       downTolerance: 0,
       offset: 0,
-      pinStart: 0,
+      pinStart: () => 0,
     }
   })
 
@@ -63,7 +63,7 @@ describe('shouldUpdate', () => {
 
   it('should not return an action of `unpin` if scrolling down and unfixed ' +
   'but the scrolling amount is less than pinStart', () => {
-    propDefaults.pinStart = 200
+    propDefaults.pinStart = () => 200
     const state = {
       height: 0,
       state: 'unfixed',
@@ -163,7 +163,7 @@ describe('shouldUpdate', () => {
   })
 
   it("should return an action of 'unfix' if currentScroll is less than or equal to pinStart", () => {
-    propDefaults.pinStart = 20
+    propDefaults.pinStart = () => 20
     const state = {
       height: 100,
       state: 'pinned',
@@ -178,7 +178,7 @@ describe('shouldUpdate', () => {
   })
 
   it("should not return an action of 'unfix' if currentScroll is more than pinStart", () => {
-    propDefaults.pinStart = 20
+    propDefaults.pinStart = () => 20
     const state = {
       height: 100,
       state: 'pinned',

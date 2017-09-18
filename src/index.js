@@ -19,7 +19,7 @@ export default class Headroom extends Component {
     onUnpin: PropTypes.func,
     onUnfix: PropTypes.func,
     wrapperStyle: PropTypes.object,
-    pinStart: PropTypes.number,
+    pinStart: PropTypes.func,
     style: PropTypes.object,
   };
 
@@ -33,7 +33,7 @@ export default class Headroom extends Component {
     onUnpin: noop,
     onUnfix: noop,
     wrapperStyle: {},
-    pinStart: 0,
+    pinStart: () => 0,
   };
 
   constructor (props) {
