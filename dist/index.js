@@ -54,6 +54,7 @@ var Headroom = function (_Component) {
       _this.setState({
         height: _this.refs.inner.offsetHeight
       });
+      _this.resizeTicking = false;
     };
 
     _this.getScrollY = function () {
@@ -109,9 +110,16 @@ var Headroom = function (_Component) {
     };
 
     _this.handleScroll = function () {
-      if (!_this.ticking) {
-        _this.ticking = true;
+      if (!_this.scrollTicking) {
+        _this.scrollTicking = true;
         (0, _raf2.default)(_this.update);
+      }
+    };
+
+    _this.handleResize = function () {
+      if (!_this.resizeTicking) {
+        _this.resizeTicking = true;
+        (0, _raf2.default)(_this.setHeightOffset);
       }
     };
 
@@ -165,12 +173,13 @@ var Headroom = function (_Component) {
       }
 
       _this.lastKnownScrollY = _this.currentScrollY;
-      _this.ticking = false;
+      _this.scrollTicking = false;
     };
 
     _this.currentScrollY = 0;
     _this.lastKnownScrollY = 0;
-    _this.ticking = false;
+    _this.scrollTicking = false;
+    _this.resizeTicking = false;
     _this.state = {
       state: 'unfixed',
       translateY: 0,
@@ -185,6 +194,10 @@ var Headroom = function (_Component) {
       this.setHeightOffset();
       if (!this.props.disable) {
         this.props.parent().addEventListener('scroll', this.handleScroll);
+
+        if (this.props.calcHeightOnResize) {
+          this.props.parent().addEventListener('resize', this.handleResize);
+        }
       }
     }
   }, {
@@ -193,8 +206,13 @@ var Headroom = function (_Component) {
       if (nextProps.disable && !this.props.disable) {
         this.unfix();
         this.props.parent().removeEventListener('scroll', this.handleScroll);
+        this.props.parent().removeEventListener('resize', this.handleResize);
       } else if (!nextProps.disable && this.props.disable) {
         this.props.parent().addEventListener('scroll', this.handleScroll);
+
+        if (this.props.calcHeightOnResize) {
+          this.props.parent().addEventListener('resize', this.handleResize);
+        }
       }
     }
   }, {
@@ -215,6 +233,7 @@ var Headroom = function (_Component) {
     value: function componentWillUnmount() {
       this.props.parent().removeEventListener('scroll', this.handleScroll);
       window.removeEventListener('scroll', this.handleScroll);
+      this.props.parent().removeEventListener('resize', this.handleResize);
     }
   }, {
     key: 'render',
@@ -233,6 +252,7 @@ var Headroom = function (_Component) {
       delete divProps.upTolerance;
       delete divProps.downTolerance;
       delete divProps.pinStart;
+      delete divProps.calcHeightOnResize;
 
       var style = divProps.style,
           wrapperStyle = divProps.wrapperStyle,
@@ -310,7 +330,8 @@ Headroom.propTypes = {
   onUnfix: _propTypes2.default.func,
   wrapperStyle: _propTypes2.default.object,
   pinStart: _propTypes2.default.func,
-  style: _propTypes2.default.object
+  style: _propTypes2.default.object,
+  calcHeightOnResize: _propTypes2.default.bool
 };
 Headroom.defaultProps = {
   parent: function parent() {
@@ -326,6 +347,7 @@ Headroom.defaultProps = {
   wrapperStyle: {},
   pinStart: function pinStart() {
     return 0;
-  }
+  },
+  calcHeightOnResize: true
 };
 exports.default = Headroom;
