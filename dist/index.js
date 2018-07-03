@@ -50,9 +50,13 @@ var Headroom = function (_Component) {
     // Class variables.
     var _this = _possibleConstructorReturn(this, (Headroom.__proto__ || Object.getPrototypeOf(Headroom)).call(this, props));
 
+    _this.setRef = function (ref) {
+      return _this.inner = ref;
+    };
+
     _this.setHeightOffset = function () {
       _this.setState({
-        height: _this.refs.inner.offsetHeight
+        height: _this.inner.offsetHeight
       });
       _this.resizeTicking = false;
     };
@@ -303,7 +307,7 @@ var Headroom = function (_Component) {
         _react2.default.createElement(
           'div',
           _extends({
-            ref: 'inner'
+            ref: this.setRef
           }, rest, {
             style: innerStyle,
             className: className
