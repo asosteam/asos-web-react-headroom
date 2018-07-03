@@ -1,7 +1,9 @@
 export default function (
   lastKnownScrollY = 0,
   currentScrollY = 0,
-  props = {},
+  props = {
+    pinStart: () => 0,
+  },
   state = {}
 ) {
   const scrollDirection = currentScrollY >= lastKnownScrollY ? 'down' : 'up'
@@ -15,7 +17,7 @@ export default function (
       distanceScrolled,
     }
     // We're at the top and not fixed yet.
-  } else if (currentScrollY <= props.pinStart && state.state !== 'unfixed') {
+  } else if (currentScrollY <= props.pinStart() && state.state !== 'unfixed') {
     return {
       action: 'unfix',
       scrollDirection,
@@ -37,7 +39,7 @@ export default function (
   } else if (
     scrollDirection === 'down' &&
     ['pinned', 'unfixed'].indexOf(state.state) >= 0 &&
-    currentScrollY > (state.height + props.pinStart) && distanceScrolled > props.downTolerance
+    currentScrollY > (state.height + props.pinStart()) && distanceScrolled > props.downTolerance
   ) {
     return {
       action: 'unpin',
